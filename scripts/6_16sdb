@@ -1,0 +1,20 @@
+
+#!/bin/bash
+# Download and build 16S database
+mkdir -p 16S_db
+# Download Listeria 16S rRNA sequences from NCBI
+echo " Downloading Listeria 16S sequences..."
+esearch -db nucleotide -query "Listeria[Organism] AND 16S ribosomal RNA" \
+  | efetch -format fasta > 16S_db/listeria_16S.fasta
+
+# Check if download succeeded
+if [[ ! -s 16S_db/listeria_16S.fasta ]]; then
+    echo " Error: download failed or empty file."
+    exit 1
+fi
+echo " Downloaded: 16S_db/listeria_16S.fasta"
+# Build BLAST DB
+echo " Building BLAST database..."
+makeblastdb -in 16S_db/listeria_16S.fasta -dbtype nucl -out 16S_db/listeria_16S
+echo " BLAST DB ready: 16S_db/listeria_16S"
+
